@@ -1,0 +1,38 @@
+# Seed list of run clubs to aggregate.
+# Scraper reads this file. Add/remove entries here.
+# Fields: handle (required), url, active, name, city, notes
+
+clubs:
+  - handle: rookiesocialclub
+    url: https://www.instagram.com/rookiesocialclub/
+    active: true
+
+  - handle: wrc_taipei
+    url: https://www.instagram.com/wrc_taipei/
+    name: Wonder Running Club
+    city: Taipei
+    active: true
+
+  - handle: high5_friday
+    url: https://www.instagram.com/high5_friday/
+    active: true
+
+  - handle: rave.club__
+    url: https://www.instagram.com/rave.club__/
+    active: true
+
+  - handle: breakerzclub
+    url: https://www.instagram.com/breakerzclub/
+    active: true
+
+  - handle: blackwater.rc
+    url: https://www.instagram.com/blackwater.rc/
+    active: true
+
+  - handle: montreal.athletes.club
+    url: https://www.instagram.com/montreal.athletes.club/
+    active: true
+
+  - handle: burpeesplease
+    url: https://www.instagram.com/burpeesplease/
+    active: true

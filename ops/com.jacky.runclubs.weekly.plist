@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.jacky.runclubs.weekly</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/node</string>
+    <string>/Users/jacky/Dev/runclubs/scripts/weekly.mjs</string>
+  </array>
+
+  <!-- Every Sunday at 20:00 local time. Weekday 0 = Sunday. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Weekday</key>
+    <integer>0</integer>
+    <key>Hour</key>
+    <integer>20</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <!-- If the mac is asleep at fire time, run on next wake. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/jacky/Dev/runclubs</string>
+
+  <key>StandardOutPath</key>
+  <string>/Users/jacky/Dev/runclubs/data/weekly.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/jacky/Dev/runclubs/data/weekly.err</string>
+</dict>
+</plist>

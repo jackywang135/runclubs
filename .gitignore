@@ -1,0 +1,15 @@
+.env
+.env.local
+node_modules/
+dist/
+
+# Raw scrape/extract output — regenerable, don't commit
+data/posts.json
+data/events.json
+data/weekly.log
+data/weekly.err
+
+# But DO commit data/weeks/*.md (the archive) — so no blanket data/ ignore
+
+*.log
+.DS_Store

@@ -1,0 +1,72 @@
+name: weekly
+
+on:
+  # Sunday 20:00 Asia/Taipei = 12:00 UTC
+  schedule:
+    - cron: "0 12 * * 0"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "Override week start date (YYYY-MM-DD). Leave blank for today."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Write .env from secrets
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          {
+            echo "APIFY_TOKEN=$APIFY_TOKEN"
+            echo "ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY"
+          } > .env
+
+      - name: Scrape
+        run: node scripts/scrape.mjs
+
+      - name: Extract
+        run: node scripts/extract.mjs
+
+      - name: Render
+        run: |
+          if [ -n "${{ inputs.from }}" ]; then
+            node scripts/render_week.mjs --from=${{ inputs.from }}
+          else
+            node scripts/render_week.mjs
+          fi
+
+      - name: Upload raw artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-${{ github.run_id }}
+          path: |
+            data/posts.json
+            data/events.json
+            data/weeks/
+
+      - name: Commit weekly digest back to main
+        run: |
+          git config user.name "runclubs-bot"
+          git config user.email "runclubs-bot@users.noreply.github.com"
+          git add data/weeks/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "weekly: $(date -u +%Y-%m-%d) digest"
+            git push
+          fi
