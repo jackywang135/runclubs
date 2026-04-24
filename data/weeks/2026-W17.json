@@ -1,24 +1,8 @@
 {
   "weekLabel": "2026-W17",
-  "from": "2026-04-24",
-  "to": "2026-05-01",
+  "from": "2026-04-25",
+  "to": "2026-05-02",
   "events": [
-    {
-      "title": "High5 Friday Morning Run",
-      "start_date": "2026-04-24",
-      "start_time": "05:00",
-      "meeting_point": null,
-      "distance_km": 5,
-      "pace": null,
-      "language": "both",
-      "confidence": 0.85,
-      "notes": "Friday recurring event at 5am, 5km run. Post mentions @high5_friday and @yu.bar for energy. Next Friday after today (2026-04-24) is 2026-04-24 itself.",
-      "club_handle": "erh_te.0807",
-      "source_post_id": "DWG03Z4Eub0",
-      "source_url": "https://www.instagram.com/p/DWG03Z4Eub0/",
-      "source_posted_at": "2026-03-20T12:49:11.000Z",
-      "also_posted_by": []
-    },
     {
       "title": "Breakerz Ice Cream Run",
       "start_date": "2026-04-25",
@@ -36,19 +20,35 @@
       "also_posted_by": []
     },
     {
-      "title": "WRC 10K at No.5 Bagels",
+      "title": "WRC 10K Run + Bagels",
       "start_date": "2026-04-25",
       "start_time": null,
       "meeting_point": "No.5 Bagels",
       "distance_km": 10,
-      "pace": "7:00/km or faster",
+      "pace": "faster than 7:00/km",
       "language": "zh",
       "confidence": 0.85,
-      "notes": "Pace >7:00/km, free bagel with in-store purchase, no registration limit",
+      "notes": "Pace requirement 7:00/km or faster, free bagel with purchase",
       "club_handle": "wrc_taipei",
       "source_post_id": "DWg3oNUknVj",
       "source_url": "https://www.instagram.com/p/DWg3oNUknVj/",
       "source_posted_at": "2026-03-30T15:27:09.000Z",
+      "also_posted_by": []
+    },
+    {
+      "title": "RAVE HYROX 常態課",
+      "start_date": "2026-04-26",
+      "start_time": "14:00",
+      "meeting_point": "@core_space",
+      "distance_km": null,
+      "pace": null,
+      "language": "zh",
+      "confidence": 0.75,
+      "notes": "Weekly recurring: Sunday 14:00. Extracted next Sunday occurrence.",
+      "club_handle": "rave.club__",
+      "source_post_id": "DWvs7Wrif5X",
+      "source_url": "https://www.instagram.com/p/DWvs7Wrif5X/",
+      "source_posted_at": "2026-04-05T09:51:00.000Z",
       "also_posted_by": []
     },
     {
@@ -60,7 +60,7 @@
       "pace": null,
       "language": "zh",
       "confidence": 0.75,
-      "notes": "Recurring Monday & Thursday 08:00, Sunday 14:00. Extracted next Monday occurrence.",
+      "notes": "Weekly recurring: Monday & Thursday 08:00, Sunday 14:00. Extracted next Monday occurrence.",
       "club_handle": "rave.club__",
       "source_post_id": "DWvs7Wrif5X",
       "source_url": "https://www.instagram.com/p/DWvs7Wrif5X/",
@@ -76,7 +76,7 @@
       "pace": null,
       "language": "both",
       "confidence": 0.95,
-      "notes": "6K or 10K option. Open to all, no sign-up required.",
+      "notes": "6K or 10K options available. Open to all, no sign-up required.",
       "club_handle": "blackwater.rc",
       "source_post_id": "DXWrhPEmdyP",
       "source_url": "https://www.instagram.com/p/DXWrhPEmdyP/",
@@ -84,7 +84,7 @@
       "also_posted_by": []
     },
     {
-      "title": "Track Day",
+      "title": "Track Day / 田徑日",
       "start_date": "2026-04-29",
       "start_time": null,
       "meeting_point": null,
@@ -92,7 +92,7 @@
       "pace": null,
       "language": "both",
       "confidence": 0.7,
-      "notes": "Weekly recurring Wednesday track/interval workout. Organized by @zejunyao. Next occurrence after 2026-04-24.",
+      "notes": "Weekly recurring Wednesday event; organized by @zejunyao; interval/track workout with recovery breaks",
       "club_handle": "montreal.athletes.club",
       "source_post_id": "DWWM0nFj3Bo",
       "source_url": "https://www.instagram.com/p/DWWM0nFj3Bo/",
@@ -101,6 +101,27 @@
         {
           "club_handle": "montreal.athletes.club",
           "source_url": "https://www.instagram.com/p/DXeTAA6mcDb/"
+        }
+      ]
+    },
+    {
+      "title": "Natural HIGH - Social Run × DJ Party",
+      "start_date": "2026-05-01",
+      "start_time": "10:00",
+      "meeting_point": "9floor Pure (玖樓璞園)",
+      "distance_km": 3.5,
+      "pace": "social",
+      "language": "both",
+      "confidence": 0.95,
+      "notes": "3.5K social run 10:00-11:00, DJ party 11:00-14:00. Free entry. First 50 get fruit popsicle.",
+      "club_handle": "9floor.co",
+      "source_post_id": "DW8sD2zDnLW",
+      "source_url": "https://www.instagram.com/p/DW8sD2zDnLW/",
+      "source_posted_at": "2026-04-10T10:44:48.000Z",
+      "also_posted_by": [
+        {
+          "club_handle": "9floor.co",
+          "source_url": "https://www.instagram.com/p/DXHGq9PlGcV/"
         }
       ]
     }
