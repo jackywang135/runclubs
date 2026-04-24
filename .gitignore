@@ -9,7 +9,7 @@ data/events.json
 data/weekly.log
 data/weekly.err
 
-# But DO commit data/weeks/*.md (the archive) — so no blanket data/ ignore
+# But DO commit data/weeks/, data/months/, data/seen_posts.json (archive + incremental state)
 
 *.log
 .DS_Store

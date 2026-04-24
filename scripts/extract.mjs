@@ -1,13 +1,23 @@
-// Phase 1 extractor: takes data/posts.json → Claude Haiku → data/events.json.
+// Extractor: takes data/posts.json → Claude Haiku → data/events.json.
+//
+// By default runs INCREMENTAL: posts already processed (in data/seen_posts.json)
+// are skipped, and their prior extractions in events.json are preserved. New
+// posts are added, and events from posts that no longer exist in posts.json are
+// dropped (so you don't keep stale events once a post falls out of the window).
+//
+// Pass --full to force a re-extract of every post in posts.json.
 //
 // Run: node scripts/extract.mjs
+//      node scripts/extract.mjs --full
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
+
+const FULL = process.argv.includes("--full");
 
 const env = Object.fromEntries(
   readFileSync(resolve(ROOT, ".env"), "utf8")
@@ -23,7 +33,26 @@ const KEY = env.ANTHROPIC_API_KEY;
 if (!KEY) throw new Error("ANTHROPIC_API_KEY missing from .env");
 
 const posts = JSON.parse(readFileSync(resolve(ROOT, "data/posts.json"), "utf8"));
-console.log(`Loaded ${posts.length} posts`);
+const currentPostIds = new Set(posts.map((p) => p.shortCode));
+
+// Load prior state (if present)
+const eventsPath = resolve(ROOT, "data/events.json");
+const seenPath = resolve(ROOT, "data/seen_posts.json");
+const priorEvents = existsSync(eventsPath) && !FULL
+  ? JSON.parse(readFileSync(eventsPath, "utf8"))
+  : [];
+const priorSeen = existsSync(seenPath) && !FULL
+  ? new Set(JSON.parse(readFileSync(seenPath, "utf8")))
+  : new Set();
+
+// What to process this run
+const toProcess = FULL ? posts : posts.filter((p) => !priorSeen.has(p.shortCode));
+
+console.log(
+  FULL
+    ? `FULL mode: processing all ${posts.length} posts`
+    : `Incremental: ${toProcess.length} new / ${posts.length - toProcess.length} already seen`,
+);
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -87,6 +116,7 @@ ${caption}
     body: JSON.stringify({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
+      temperature: 0,
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: userMsg }],
     }),
@@ -98,7 +128,6 @@ ${caption}
   }
   const data = await res.json();
   const text = data.content?.[0]?.text?.trim() || "";
-  // strip markdown fences if any
   const cleaned = text.replace(/^```(?:json)?\s*/, "").replace(/\s*```$/, "");
   try {
     return JSON.parse(cleaned);
@@ -108,7 +137,6 @@ ${caption}
   }
 }
 
-// Rate limit is 50 RPM on Haiku. Batch 5 in parallel, pause 6s between batches.
 const BATCH = 5;
 const BATCH_PAUSE_MS = 6000;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -126,9 +154,9 @@ async function extractWithRetry(p, attempt = 0) {
   }
 }
 
-const results = [];
-for (let i = 0; i < posts.length; i += BATCH) {
-  const slice = posts.slice(i, i + BATCH);
+const newResults = [];
+for (let i = 0; i < toProcess.length; i += BATCH) {
+  const slice = toProcess.slice(i, i + BATCH);
   const out = await Promise.all(
     slice.map(async (p) => {
       try {
@@ -140,17 +168,17 @@ for (let i = 0; i < posts.length; i += BATCH) {
       }
     }),
   );
-  results.push(...out);
-  console.log(`  ${Math.min(i + BATCH, posts.length)}/${posts.length}`);
-  if (i + BATCH < posts.length) await sleep(BATCH_PAUSE_MS);
+  newResults.push(...out);
+  console.log(`  ${Math.min(i + BATCH, toProcess.length)}/${toProcess.length}`);
+  if (i + BATCH < toProcess.length) await sleep(BATCH_PAUSE_MS);
 }
 
-// Flatten: one record per event
-const events = [];
-for (const { post, result } of results) {
+// Flatten new events from this run.
+const newEvents = [];
+for (const { post, result } of newResults) {
   if (!result.is_event) continue;
   for (const e of result.events || []) {
-    events.push({
+    newEvents.push({
       ...e,
       club_handle: post.ownerUsername,
       source_post_id: post.shortCode,
@@ -160,15 +188,35 @@ for (const { post, result } of results) {
   }
 }
 
-events.sort((a, b) => (a.start_date || "").localeCompare(b.start_date || ""));
+// Merge: keep prior events whose source post still exists in the current scrape.
+// Drop prior events whose source post has aged out (so stale events fade away).
+const preserved = FULL
+  ? []
+  : priorEvents.filter((e) => currentPostIds.has(e.source_post_id));
 
-writeFileSync(resolve(ROOT, "data/events.json"), JSON.stringify(events, null, 2));
-console.log(`\nExtracted ${events.length} events → data/events.json`);
+const merged = [...preserved, ...newEvents];
+merged.sort((a, b) => (a.start_date || "").localeCompare(b.start_date || ""));
 
-// May 2026 summary
-const may = events.filter((e) => (e.start_date || "").startsWith("2026-05"));
-console.log(`\n${may.length} events in May 2026:`);
-for (const e of may) {
+// Update seen set: everything we've now processed + prior seen (trimmed to posts
+// still in view, so re-appearing posts will be re-evaluated).
+const nextSeen = new Set();
+for (const p of posts) nextSeen.add(p.shortCode);
+// (Prior seen posts no longer in view are dropped; fine, we won't waste calls.)
+
+writeFileSync(eventsPath, JSON.stringify(merged, null, 2));
+writeFileSync(seenPath, JSON.stringify([...nextSeen], null, 2));
+
+console.log(
+  `\nEvents: ${preserved.length} preserved + ${newEvents.length} new = ${merged.length} total → data/events.json`,
+);
+
+// Summary for the month we're interested in (current month in Taipei)
+const monthKey = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Taipei" })
+  .format(new Date())
+  .slice(0, 7);
+const thisMonth = merged.filter((e) => (e.start_date || "").startsWith(monthKey));
+console.log(`\n${thisMonth.length} events with start_date in ${monthKey}:`);
+for (const e of thisMonth.slice(0, 20)) {
   const t = e.start_time ? ` ${e.start_time}` : "";
   const d = e.distance_km ? ` · ${e.distance_km}km` : "";
   const mp = e.meeting_point ? ` · ${e.meeting_point}` : "";
