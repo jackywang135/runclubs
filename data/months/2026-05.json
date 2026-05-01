@@ -2,38 +2,5 @@
   "month": "2026-05",
   "from": "2026-05-01",
   "to": "2026-05-31",
-  "events": [
-    {
-      "title": "Natural HIGH - Social Run × DJ Party",
-      "start_date": "2026-05-01",
-      "start_time": "10:00",
-      "meeting_point": null,
-      "distance_km": 3.5,
-      "pace": "social",
-      "language": "both",
-      "confidence": 0.95,
-      "notes": "First session 10:00-11:00 (3.5K social run), second session 11:00-14:00 (DJ party). Free entry. First 50 get ice pops. Hosted by 9floor (玖樓).",
-      "club_handle": "9floor.co",
-      "source_post_id": "DXHGq9PlGcV",
-      "source_url": "https://www.instagram.com/p/DXHGq9PlGcV/",
-      "source_posted_at": "2026-04-14T11:49:44.000Z",
-      "also_posted_by": []
-    },
-    {
-      "title": "ELITE SUNDAY EP3",
-      "start_date": "2026-05-03",
-      "start_time": "07:00",
-      "meeting_point": "大安森林公園Exit2",
-      "distance_km": null,
-      "pace": null,
-      "language": "zh",
-      "confidence": 0.92,
-      "notes": "Three distance options: 5K, 7.5K, 10K (runners choose their own). Post-run coffee & breakfast included.",
-      "club_handle": "elitebyrookies",
-      "source_post_id": "DXUotQ3kxQj",
-      "source_url": "https://www.instagram.com/p/DXUotQ3kxQj/",
-      "source_posted_at": "2026-04-19T18:04:41.000Z",
-      "also_posted_by": []
-    }
-  ]
+  "events": []
 }
